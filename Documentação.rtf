@@ -1,0 +1,192 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1046{\fonttbl{\f0\fnil\fcharset0 Calibri;}}
+{\*\generator Riched20 10.0.19041}\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\f0\fs22\lang22 ## Documenta\'e7\'e3o Completa do C\'f3digo `djc_games_menu.py`\par
+\par
+Este documento apresenta uma descri\'e7\'e3o detalhada de cada parte do script `djc_games_menu.py`, explicando a fun\'e7\'e3o de cada importa\'e7\'e3o, classe, m\'e9todo, vari\'e1vel e bloco de c\'f3digo.\par
+\par
+---\par
+\par
+### 1. Importa\'e7\'f5es\par
+\par
+```python\par
+import sys\par
+import os\par
+import subprocess\par
+from PyQt5.QtWidgets import (\par
+    QApplication, QMainWindow, QWidget,\par
+    QVBoxLayout, QLabel, QPushButton, QStackedLayout\par
+)\par
+from PyQt5.QtCore import Qt\par
+from PyQt5.QtGui import QFont\par
+```\par
+\par
+- **sys**: fornece acesso a vari\'e1veis e fun\'e7\'f5es relacionadas ao interpretador Python. Aqui \'e9 usado para obter `sys.argv` (argumentos de linha de comando) e `sys.executable` (caminho do execut\'e1vel Python atual).\par
+- **os**: m\'f3dulo que permite interagir com o sistema operacional. Utilizado para verificar exist\'eancia de arquivos com `os.path.exists`.\par
+- **subprocess**: executa processos externos; o m\'e9todo `Popen` roteia a chamada a outros scripts Python sem bloquear a interface.\par
+- **PyQt5.QtWidgets**:\par
+  - `QApplication`: objeto principal que gerencia a aplica\'e7\'e3o e o loop de eventos.\par
+  - `QMainWindow`: janela principal com suporte a barras de menu, status e toolbar.\par
+  - `QWidget`: base para qualquer componente visual.\par
+  - `QVBoxLayout`: layout vertical que organiza widgets em coluna.\par
+  - `QLabel`: exibe texto est\'e1tico.\par
+  - `QPushButton`: bot\'e3o clic\'e1vel.\par
+  - `QStackedLayout`: layout que empilha widgets e permite altern\'e2ncia.\par
+- **PyQt5.QtCore.Qt**: cont\'e9m constantes \'fateis, como alinhamentos (`AlignCenter`).\par
+- **PyQt5.QtGui.QFont**: define fam\'edlia, tamanho e estilo de fonte dos textos.\par
+\par
+---\par
+\par
+### 2. Classe `MainWindow`\par
+\par
+```python\par
+class MainWindow(QMainWindow):\par
+    def __init__(self):\par
+        super().__init__()\par
+        # ... configura\'e7\'f5es e cria\'e7\'e3o de widgets ...\par
+```\par
+\par
+- **Heran\'e7a**: herda de `QMainWindow`, ganhando funcionalidade de janela principal.\par
+- **M\'e9todo `__init__`**:\par
+  1. `super().__init__()`: chama o construtor da classe pai.\par
+  2. `setWindowTitle("DJC Games")`: define o t\'edtulo da janela.\par
+  3. `setStyleSheet(...)`: aplica CSS global para controlar cores, bordas e espa\'e7amentos de todos os widgets.\par
+  4. Cria\'e7\'e3o de bot\'f5es prim\'e1rios (`btn_play`, `btn_credit`, `btn_exit`) com fonte, tamanho fixo e conex\'e3o de sinais:\par
+     - `clicked.connect(self.show_game_selection)`\par
+     - `clicked.connect(self.show_credits)`\par
+     - `clicked.connect(self.close)`\par
+  5. Montagem de `menu_widget` com `QVBoxLayout` (alinhamento central, espa\'e7amento de 30px).\par
+  6. Cria\'e7\'e3o de `QStackedLayout` (`self.stack`) para armazenar:\par
+     - **\'cdndice 0**: `menu_widget` (tela principal)\par
+     - **\'cdndice 1**: inst\'e2ncia de `GameSelectionPage`\par
+     - **\'cdndice 2**: inst\'e2ncia de `CreditsPage`\par
+  7. Uso de um `container` (widget simples) para definir `self.stack` como layout central.\par
+  8. `self.stack.setCurrentIndex(0)`: exibe inicialmente o menu.\par
+\par
+---\par
+\par
+#### 2.1. M\'e9todo `show_game_selection`\par
+\par
+```python\par
+def show_game_selection(self):\par
+    self.stack.setCurrentWidget(self.game_page)\par
+```\par
+\par
+- **Objetivo**: trocar a exibi\'e7\'e3o para a p\'e1gina de sele\'e7\'e3o de jogos.\par
+- **Opera\'e7\'e3o**: o m\'e9todo `setCurrentWidget` mostra o widget `self.game_page`, indexado previamente.\par
+\par
+---\par
+\par
+#### 2.2. M\'e9todo `show_credits`\par
+\par
+```python\par
+def show_credits(self):\par
+    self.stack.setCurrentWidget(self.credit_page)\par
+```\par
+\par
+- **Objetivo**: alternar para a p\'e1gina de cr\'e9ditos.\par
+- **Detalhe**: permite que o usu\'e1rio retorne ao menu principal depois de ver os cr\'e9ditos.\par
+\par
+---\par
+\par
+### 3. Classe `GameSelectionPage`\par
+\par
+```python\par
+class GameSelectionPage(QWidget):\par
+    GAME_PATHS = \{"snake": "snake.py", "tetris": "tetris.py"\}\par
+\par
+    def __init__(self, main_win):\par
+        super().__init__()\par
+        self.main_win = main_win\par
+        # ... montagem da interface ...\par
+```\par
+\par
+- **Heran\'e7a**: estende `QWidget`, base para componentes sem menu ou toolbar.\par
+- **Vari\'e1vel de classe `GAME_PATHS`**: mapeia identificadores de jogos para seus arquivos Python.\par
+- **Refer\'eancia `main_win`**: usada para acessar o `QStackedLayout` da `MainWindow` e retornar ao menu.\par
+\par
+#### 3.1. `__init__` de `GameSelectionPage`\par
+\par
+1. `super().__init__()`: inicializa widget base.\par
+2. Cria `QVBoxLayout` centrado com espa\'e7amento de 20px.\par
+3. Adiciona `QLabel` de t\'edtulo **"Escolha o Jogo"** em fonte maior.\par
+4. Itera sobre `GAME_PATHS`:\par
+   - Verifica `os.path.exists(path)`;\par
+   - Se verdadeiro, cria `QPushButton` com `name.upper()`;\par
+   - Conecta `btn.clicked` a `lambda checked, p=path: self.launch_game(p)`.\par
+5. Cria bot\'e3o **VOLTAR** que chama `self.back_to_menu()`.\par
+\par
+#### 3.2. M\'e9todo `launch_game`\par
+\par
+```python\par
+def launch_game(self, script_path):\par
+    try:\par
+        subprocess.Popen([sys.executable, script_path])\par
+    except Exception as e:\par
+        print(f"Erro ao iniciar o jogo: \{e\}")\par
+```\par
+\par
+- **Objetivo**: iniciar o script selecionado em processo separado.\par
+- **Uso de `sys.executable`**: garante o uso exato da mesma vers\'e3o do Python que executa o menu.\par
+- **Tratamento de erro**: exibe no console se falhar.\par
+\par
+#### 3.3. M\'e9todo `back_to_menu`\par
+\par
+```python\par
+def back_to_menu(self):\par
+    self.main_win.stack.setCurrentIndex(0)\par
+```\par
+\par
+- **Objetivo**: retornar ao menu principal.\par
+- **Funcionamento**: acessa o `QStackedLayout` da janela principal e define `index=0`.\par
+\par
+---\par
+\par
+### 4. Classe `CreditsPage`\par
+\par
+```python\par
+class CreditsPage(QWidget):\par
+    def __init__(self, main_win):\par
+        super().__init__()\par
+        self.main_win = main_win\par
+        # ... montagem da interface ...\par
+```\par
+\par
+- **Heran\'e7a**: baseado em `QWidget`.\par
+- **Refer\'eancia `main_win`**: para retornar ao menu.\par
+\par
+#### 4.1. `__init__` de `CreditsPage`\par
+\par
+1. `super().__init__()` inicializa o widget.\par
+2. Cria `QVBoxLayout` centralizado com espa\'e7amento de 20px.\par
+3. Adiciona `QLabel` de t\'edtulo **"Cr\'e9ditos"**.\par
+4. Adiciona `QLabel` de texto fixo:\par
+   ```text\par
+   Desenvolvido por Matheus\par
+   DJC Games\par
+   2025\par
+   ```\par
+5. Cria bot\'e3o **VOLTAR**, conectado a `lambda: self.main_win.stack.setCurrentIndex(0)`.\par
+\par
+---\par
+\par
+### 5. Bloco Principal (`if __name__ == "__main__":`)\par
+\par
+```python\par
+if __name__ == "__main__":\par
+    app = QApplication(sys.argv)\par
+    win = MainWindow()\par
+    win.showFullScreen()\par
+    sys.exit(app.exec_())\par
+```\par
+\par
+- **Condi\'e7\'e3o**: garante execu\'e7\'e3o somente quando o script \'e9 chamado diretamente.\par
+- **`QApplication(sys.argv)`**: constr\'f3i o gerenciador de eventos.\par
+- **`showFullScreen()`**: abre a janela em tela cheia.\par
+- **`app.exec_()`**: inicia o loop de eventos Qt at\'e9 o fechamento da janela.\par
+\par
+---\par
+\par
+> **Resumo**: O c\'f3digo define tr\'eas telas distintas num layout empilhado, conecta bot\'f5es a fun\'e7\'f5es de troca de tela e usa processos externos para rodar jogos sem bloquear a interface. Todas as partes s\'e3o desacopladas e seguem boas pr\'e1ticas de PyQt5 para manter o aplicativo modular e f\'e1cil de manter.\par
+\par
+}
+ 
