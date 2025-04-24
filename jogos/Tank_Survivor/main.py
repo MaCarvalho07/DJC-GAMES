@@ -71,7 +71,7 @@ class Player(GameObject):
 
     def fire_bullet(self):
         # Create a bullet at the current player position
-        bullet = Bullet(self.x + self.rect.width // 2 - 5, self.y, "Tank_Survivor/assets/images/playerBullet.png")
+        bullet = Bullet(self.x + self.rect.width // 2 - 5, self.y, "jogos/Tank_Survivor/assets/images/playerBullet.png")
         self.bullets.append(bullet)
 
     def draw_hp(self, screen):
@@ -152,7 +152,7 @@ class Enemy(GameObject):
 
     def fire_bullet(self):
         # Create a bullet that moves downwards
-        bullet = Bullet(self.x + self.rect.width // 2 - 5, self.y + self.rect.height, "Tank_Survivor/assets/images/playerBullet.png", speed=7, direction='down')
+        bullet = Bullet(self.x + self.rect.width // 2 - 5, self.y + self.rect.height, "jogos/Tank_Survivor/assets/images/playerBullet.png", speed=7, direction='down')
         self.bullets.append(bullet)
 
     def take_damage(self, damage, small_explosion_image):
@@ -163,7 +163,7 @@ class Enemy(GameObject):
             if self.health <= 0:
                 self.health = 0
                 self.is_dead = True
-                self.image = pygame.image.load("Tank_Survivor/assets/images/bigExplosion.png")
+                self.image = pygame.image.load("jogos/Tank_Survivor/assets/images/bigExplosion.png")
                 self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
                 self.death_timer = 60
 
@@ -186,7 +186,7 @@ class Landmine(GameObject):
     def __init__(self, x, y, image_path):
         super().__init__(x, y, image_path)
         self.exploded = False
-        self.explosion_image = pygame.image.load("Tank_Survivor/assets/images/bigExplosion.png")
+        self.explosion_image = pygame.image.load("jogos/Tank_Survivor/assets/images/bigExplosion.png")
         self.explosion_timer = 0  # Timer to track explosion duration
         self.speed = 1  # Speed for moving downwards
 
@@ -243,27 +243,29 @@ class BossEnemy(Enemy):
 
     def fire_bullet(self):
         # Create a bullet that moves downwards faster than regular enemies
-        bullet = Bullet(self.x + self.rect.width // 2 - 5, self.y + self.rect.height, "Tank_Survivor/assets/images/atomic-bomb.png", speed=10, direction='down')
+        bullet = Bullet(self.x + self.rect.width // 2 - 5, self.y + self.rect.height, "jogos/Tank_Survivor/assets/images/atomic-bomb.png", speed=10, direction='down')
         self.bullets.append(bullet)
 
 
 def newEnemy():
-    return Enemy(x=random.randint(0, 736), y=random.randint(-200, -50), image_path="Tank_Survivor/assets/images/enemyTank.png", x_speed=1,
+    return Enemy(x=random.randint(0, 736), y=random.randint(-200, -50), image_path="jogos/Tank_Survivor/assets/images/enemyTank.png", x_speed=1,
           y_speed=0.5, health=100)
 
 def newLandmine():
-    return Landmine(x=random.randint(0, 736), y=random.randint(-200, -50), image_path="Tank_Survivor/assets/images/mine.png")
+    return Landmine(x=random.randint(0, 736), y=random.randint(-200, -50), image_path="jogos/Tank_Survivor/assets/images/mine.png")
 
 # Initialize Pygame
 pygame.init()
+# Set up the screen
 screen = pygame.display.set_mode((800, 600))
-pygame.display.set_caption("Tank Game")
+
+pygame.display.set_caption("Tank Survivor")
 
 # Load images
-background = pygame.image.load("Tank_Survivor/assets/images/top-view-city-with-desert_70347-2005.jpg")
-small_explosion_image = pygame.image.load("Tank_Survivor/assets/images/smallExplosion.png")
+background = pygame.image.load("jogos/Tank_Survivor/assets/images/top-view-city-with-desert_70347-2005.jpg")
+small_explosion_image = pygame.image.load("jogos/Tank_Survivor/assets/images/smallExplosion.png")
 small_explosion_image = pygame.transform.scale(small_explosion_image, (32, 32))
-mine_image = pygame.image.load("Tank_Survivor/assets/images/mine.png")  # Load landmine image
+mine_image = pygame.image.load("jogos/Tank_Survivor/assets/images/mine.png")  # Load landmine image
 clock = pygame.time.Clock()
 
 # game first home page
@@ -277,8 +279,8 @@ while True:
             pygame.quit()
 
     # Create player object
-    greenPlayer = Player(x=380, y=500, image_path="Tank_Survivor/assets/images/playerTank.png", speed_factor=3, hp=200, power=20)
-    bluePlayer = Player(x=380, y=500, image_path="Tank_Survivor/assets/images/Player2tank.png", speed_factor=3, hp=100, power=40)
+    greenPlayer = Player(x=380, y=500, image_path="jogos/Tank_Survivor/assets/images/playerTank.png", speed_factor=3, hp=200, power=20)
+    bluePlayer = Player(x=380, y=500, image_path="jogos/Tank_Survivor/assets/images/Player2tank.png", speed_factor=3, hp=100, power=40)
     player = greenPlayer
 
     # Create 5 enemy tanks for level 1
@@ -295,7 +297,7 @@ while True:
 
     mineDamage = 10
     # File to store high score
-    high_score_file = "Tank_Survivor/assets/files/high_score.txt"
+    high_score_file = "jogos/Tank_Survivor/assets/files/high_score.txt"
 
     # Function to read the high score from the files
     def read_high_score():
@@ -352,7 +354,7 @@ while True:
                     player = greenPlayer
 
         # Render the background
-        screen.blit(pygame.image.load("Tank_Survivor/assets/images/top-view-countryside_70347-2007.jpg"), (0, 0))
+        screen.blit(pygame.image.load("jogos/Tank_Survivor/assets/images/top-view-countryside_70347-2007.jpg"), (0, 0))
 
         # Display the high score
         high_score_text = pygame.font.Font(None, 64).render(f"High Score: {high_score}", True, (200, 50, 50))
@@ -389,8 +391,8 @@ while True:
             pygame.draw.rect(screen, (255, 0, 0), green_box_rect, 5)  # Red border around green box
 
         # Load and center images in boxes
-        power_image = pygame.image.load("Tank_Survivor/assets/images/Player2tank.png")
-        defence_image = pygame.image.load("Tank_Survivor/assets/images/playerTank.png")
+        power_image = pygame.image.load("jogos/Tank_Survivor/assets/images/Player2tank.png")
+        defence_image = pygame.image.load("jogos/Tank_Survivor/assets/images/playerTank.png")
         screen.blit(power_image, (blue_box_rect.x + (blue_box_rect.width - power_image.get_width()) // 2,
                                   blue_box_rect.y + (blue_box_rect.height - power_image.get_height()) // 2))
         screen.blit(defence_image, (green_box_rect.x + (green_box_rect.width - defence_image.get_width()) // 2,
@@ -400,7 +402,7 @@ while True:
 
     # when boss appare
     boss_coming = 40
-    boss = BossEnemy(300, 50, "Tank_Survivor/assets/images/jet-plane.png", x_speed=1.5, health=1000)
+    boss = BossEnemy(300, 50, "jogos/Tank_Survivor/assets/images/jet-plane.png", x_speed=1.5, health=1000)
     # Game loop
     while is_running:
         is_home = True
@@ -575,7 +577,7 @@ while True:
 
         if high_score < player.score:
             high_score = player.score
-            with open("Tank_Survivor/assets/files/high_score.txt", "w") as file:
+            with open("jogos/Tank_Survivor/assets/files/high_score.txt", "w") as file:
                 file.write(str(high_score))
 
 
