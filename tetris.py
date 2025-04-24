@@ -1,6 +1,7 @@
 import pygame
 import random
 import time
+import os
 
 colors = [
     (0, 0, 0),
@@ -266,5 +267,8 @@ while not done:
 
     pygame.display.flip()
     clock.tick(fps)
+
+
+win.showFullScreen()  # Abre a janela em tela cheia
 
 pygame.quit()
