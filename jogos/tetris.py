@@ -43,23 +43,25 @@ class Figure:
 
 
 class Tetris:
-    def __init__(self, height, width):
+    def __init__(self, height, width, screen_width, screen_height):
         self.level = 2
         self.score = 0
         self.state = "start"
         self.field = []
-        self.height = 0
-        self.width = 0
-        self.x = 100
-        self.y = 60
-        self.zoom = 20
-        self.figure = None
-    
         self.height = height
         self.width = width
+        
+        # Calculate zoom factor based on screen size
+        self.zoom = min(screen_width // (width + 10), screen_height // (height + 3))
+        
+        # Center the game field on screen
+        self.x = (screen_width - self.zoom * width) // 2
+        self.y = (screen_height - self.zoom * height) // 2
+        
+        self.figure = None
+    
+        # Initialize the field
         self.field = []
-        self.score = 0
-        self.state = "start"
         for i in range(height):
             new_line = []
             for j in range(width):
@@ -108,8 +110,6 @@ class Tetris:
             self.freeze()
 
     def freeze(self):
-        if event.key != pygame.K_SPACE:
-            time.sleep(0.8)
         for i in range(4):
             for j in range(4):
                 if i * 4 + j in self.figure.image():
@@ -140,16 +140,21 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GRAY = (128, 128, 128)
 
-size = (400, 500)
-screen = pygame.display.set_mode(size)
+# Get the screen info
+info = pygame.display.Info()
+screen_width = info.current_w
+screen_height = info.current_h
 
-pygame.display.set_caption("Tetris")
+# Set the screen to fullscreen
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
+
+pygame.display.set_caption("Tetris Fullscreen")
 
 # Loop until the user clicks the close button.
 done = False
 clock = pygame.time.Clock()
 fps = 25
-game = Tetris(20, 10)
+game = Tetris(20, 10, screen_width, screen_height)
 counter = 0
 
 pressing_down = False
@@ -184,14 +189,22 @@ while not done:
                 game.go_space()
                 pressing_down = False
             if event.key == pygame.K_ESCAPE:
-                game.__init__(20, 10)
+                # Reset game or exit
+                if game.state == "gameover":
+                    game = Tetris(20, 10, screen_width, screen_height)
+                else:
+                    done = True
+            if event.key == pygame.K_f:
+                # Toggle fullscreen
+                pygame.display.toggle_fullscreen()
 
-    if event.type == pygame.KEYUP:
+        if event.type == pygame.KEYUP:
             if event.key == pygame.K_DOWN:
                 pressing_down = False
 
     screen.fill(BLACK)
 
+    # Draw game field
     for i in range(game.height):
         for j in range(game.width):
             pygame.draw.rect(screen, GRAY, [game.x + game.zoom * j, game.y + game.zoom * i, game.zoom, game.zoom], 1)
@@ -199,6 +212,7 @@ while not done:
                 pygame.draw.rect(screen, colors[game.field[i][j]],
                                  [game.x + game.zoom * j + 1, game.y + game.zoom * i + 1, game.zoom - 2, game.zoom - 1])
 
+    # Draw current figure
     if game.figure is not None:
         for i in range(4):
             for j in range(4):
@@ -209,21 +223,52 @@ while not done:
                                       game.y + game.zoom * (i + game.figure.y) + 1,
                                       game.zoom - 2, game.zoom - 2])
 
-    font = pygame.font.SysFont('Calibri', 25, True, False)
-    font1 = pygame.font.SysFont('Calibri', 65, True, False)
+    # Calculate font sizes based on screen dimensions
+    font_size = max(int(screen_height / 25), 20)
+    big_font_size = max(int(screen_height / 40), 14)
+    
+    font = pygame.font.SysFont('Calibri', font_size, True, False)
+    font1 = pygame.font.SysFont('Calibri', big_font_size, True, False)
+    
+    # Draw score
     text = font.render("Score: " + str(game.score), True, WHITE)
-    text_game_over = font1.render("Game Over", True, (255, 125, 0))
-    text_game_over1 = font1.render("Press ESC", True, (255, 215, 0))
+    screen.blit(text, [game.x, game.y - font_size - 10])
+    
+    # Draw controls info
+    controls_text = font.render("Controls: Arrows, Space, ESC to exit, F to toggle fullscreen", True, WHITE)
 
-    screen.blit(text, [0, 0])
+    # Calcular a posição centralizada
+    center_x = (screen_width - controls_text.get_width()) // 2
+
+    # Aplicar um deslocamento menor para a esquerda
+    offset = -5 
+    controls_x = center_x + offset
+
+    # Garantir que o texto não saia da tela pela esquerda
+    controls_x = max(20, controls_x) 
+
+    # Desenhar o texto na posição calculada
+    screen.blit(controls_text, [controls_x, screen_height - font_size - 5])
+    
+    # Game over text
     if game.state == "gameover":
-        screen.blit(text_game_over, [20, 200])
-        screen.blit(text_game_over1, [25, 265])
+        text_game_over = font1.render("Game Over", True, (255, 125, 0))
+        text_game_over1 = font1.render("Press ESC", True, (255, 215, 0))
+        
+        # Center the game over text
+        go_width = text_game_over.get_width()
+        go_height = text_game_over.get_height()
+        screen.blit(text_game_over, [(screen_width - go_width) // 2, (screen_height - go_height) // 2 - go_height])
+        
+        # Center the press ESC text
+        esc_width = text_game_over1.get_width()
+        esc_height = text_game_over1.get_height()
+        screen.blit(text_game_over1, [(screen_width - esc_width) // 2, (screen_height - esc_height) // 2 + 10])
 
     pygame.display.flip()
     clock.tick(fps)
 
 
-win.showFullScreen()  # Abre a janela em tela cheia
+
 
 pygame.quit()

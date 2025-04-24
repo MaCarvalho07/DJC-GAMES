@@ -64,7 +64,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # Define o título da janela
-        self.setWindowTitle("DJC Games - O Poder que Python pode trazer")
+        self.setWindowTitle("DJC Games - Python Games")
 
         # Aplica estilo global para QLabel e QPushButton
         self.setStyleSheet("""
@@ -110,7 +110,7 @@ class MainWindow(QMainWindow):
         title_container = QVBoxLayout()
 
         # Título principal em fonte grande e negrito
-        self.title = QLabel("COSMIC QUEST")
+        self.title = QLabel("DJC Games - Python Games")
         self.title.setFont(QFont("Arial", 50, QFont.Bold))
         self.title.setStyleSheet("letter-spacing: 5px;")  # Espaçamento entre letras extra
         title_container.addWidget(self.title)
@@ -143,7 +143,7 @@ class MainWindow(QMainWindow):
         main_layout.addStretch()  # Empurra elementos seguintes para o topo
 
         # === Rodapé simples ===
-        footer = QLabel("COSMIC QUEST © 2024")
+        footer = QLabel("DJC Games - Python Games © 2025")
         footer.setAlignment(Qt.AlignRight)  # Alinha o texto à direita
         footer.setStyleSheet("color: rgba(255, 255, 255, 0.5); font-size: 12px; letter-spacing: 2px;")
         main_layout.addWidget(footer)
@@ -339,7 +339,8 @@ class CreditsPage(QWidget):
 
         # Label de seção e valor para cada item
         for label_text, value_text in [
-            ("DESENVOLVIDO POR", "Matheus"),
+            ("DESENVOLVIDO POR", "Matheus Carvalho e Gabriel Loquetti"),
+             
             ("ESTÚDIO", "DJC Games"),
             ("ANO", "2025"),
         ]:
