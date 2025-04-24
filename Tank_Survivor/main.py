@@ -71,7 +71,7 @@ class Player(GameObject):
 
     def fire_bullet(self):
         # Create a bullet at the current player position
-        bullet = Bullet(self.x + self.rect.width // 2 - 5, self.y, "assets/images/playerBullet.png")
+        bullet = Bullet(self.x + self.rect.width // 2 - 5, self.y, "Tank_Survivor/assets/images/playerBullet.png")
         self.bullets.append(bullet)
 
     def draw_hp(self, screen):
@@ -152,7 +152,7 @@ class Enemy(GameObject):
 
     def fire_bullet(self):
         # Create a bullet that moves downwards
-        bullet = Bullet(self.x + self.rect.width // 2 - 5, self.y + self.rect.height, "assets/images/playerBullet.png", speed=7, direction='down')
+        bullet = Bullet(self.x + self.rect.width // 2 - 5, self.y + self.rect.height, "Tank_Survivor/assets/images/playerBullet.png", speed=7, direction='down')
         self.bullets.append(bullet)
 
     def take_damage(self, damage, small_explosion_image):
@@ -163,7 +163,7 @@ class Enemy(GameObject):
             if self.health <= 0:
                 self.health = 0
                 self.is_dead = True
-                self.image = pygame.image.load("assets/images/bigExplosion.png")
+                self.image = pygame.image.load("Tank_Survivor/assets/images/bigExplosion.png")
                 self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
                 self.death_timer = 60
 
@@ -186,7 +186,7 @@ class Landmine(GameObject):
     def __init__(self, x, y, image_path):
         super().__init__(x, y, image_path)
         self.exploded = False
-        self.explosion_image = pygame.image.load("assets/images/bigExplosion.png")
+        self.explosion_image = pygame.image.load("Tank_Survivor/assets/images/bigExplosion.png")
         self.explosion_timer = 0  # Timer to track explosion duration
         self.speed = 1  # Speed for moving downwards
 
@@ -243,16 +243,16 @@ class BossEnemy(Enemy):
 
     def fire_bullet(self):
         # Create a bullet that moves downwards faster than regular enemies
-        bullet = Bullet(self.x + self.rect.width // 2 - 5, self.y + self.rect.height, "assets/images/atomic-bomb.png", speed=10, direction='down')
+        bullet = Bullet(self.x + self.rect.width // 2 - 5, self.y + self.rect.height, "Tank_Survivor/assets/images/atomic-bomb.png", speed=10, direction='down')
         self.bullets.append(bullet)
 
 
 def newEnemy():
-    return Enemy(x=random.randint(0, 736), y=random.randint(-200, -50), image_path="assets/images/enemyTank.png", x_speed=1,
+    return Enemy(x=random.randint(0, 736), y=random.randint(-200, -50), image_path="Tank_Survivor/assets/images/enemyTank.png", x_speed=1,
           y_speed=0.5, health=100)
 
 def newLandmine():
-    return Landmine(x=random.randint(0, 736), y=random.randint(-200, -50), image_path="assets/images/mine.png")
+    return Landmine(x=random.randint(0, 736), y=random.randint(-200, -50), image_path="Tank_Survivor/assets/images/mine.png")
 
 # Initialize Pygame
 pygame.init()
@@ -263,7 +263,7 @@ pygame.display.set_caption("Tank Game")
 background = pygame.image.load("Tank_Survivor/assets/images/top-view-city-with-desert_70347-2005.jpg")
 small_explosion_image = pygame.image.load("Tank_Survivor/assets/images/smallExplosion.png")
 small_explosion_image = pygame.transform.scale(small_explosion_image, (32, 32))
-mine_image = pygame.image.load("assets/images/mine.png")  # Load landmine image
+mine_image = pygame.image.load("Tank_Survivor/assets/images/mine.png")  # Load landmine image
 clock = pygame.time.Clock()
 
 # game first home page
