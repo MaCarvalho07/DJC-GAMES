@@ -269,6 +269,6 @@ while not done:
     clock.tick(fps)
 
 
-
+win.showFullScreen()  # Abre a janela em tela cheia
 
 pygame.quit()
