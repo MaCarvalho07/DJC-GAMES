@@ -176,7 +176,7 @@ class GameSelectionPage(QWidget):
     """
     Página para seleção de scripts de jogos (snake e tetris).
     """
-    GAME_PATHS = {"snake": "jogos/snake.py", "tetris": "jogos/tetris.py", "Tank Survivor": "jogos/Tank_Survivor/main.py", "Space Invaders": "jogos/Space-Invaders/main.py"}
+    GAME_PATHS = {"snake": "jogos/snake.py", "tetris": "jogos/tetris.py", "Tank Survivor": "jogos/Tank_Survivor/main.py", "Space Invaders": "jogos/Space-Invaders/main.py", "Pong": "jogos/pong.py"}
 
     def __init__(self, main_win):
         super().__init__()
